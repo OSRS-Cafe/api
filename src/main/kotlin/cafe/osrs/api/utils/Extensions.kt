@@ -28,6 +28,8 @@ fun getUnixTime() = System.currentTimeMillis() / 1000
 
 fun RoutingContext.setHiscoreResponseHeaders(response: HiscoreResponse) {
     //TODO: Put this into the response json?
+    //Later sven: Probably not, this way its very convenient to pass this message for multiple kind of responses
+    //We should however make sure to have different cache headers for different kinds of clients (eg: Hiscore vs GE)
     call.response.header("RS-Cache-QueryTime", response.queryTime)
     call.response.header("RS-Cache-Cached", response.cached.toString())
     call.response.header("RS-Cache-Time-Until-Refresh", response.timeUntilRefresh)
