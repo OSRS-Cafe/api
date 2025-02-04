@@ -1,0 +1,5 @@
+TODO:
+- Decide on a clear design for different Clients (HiscoreClient, GEClient etc)
+- Decide on Headers for different clients
+- Setup proper logging
+- More endpoints (GE, etc)

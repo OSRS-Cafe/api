@@ -8,6 +8,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.PlayerRoute() {
+    //TODO: Add combat level
     get("/player/{mode}/{name}") {
         val mode = HiscoreMode.get(call.pathParameters["mode"]) ?: throw BadHiscoreModeException()
         val name = call.pathParameters["name"].verifyValidCharacterName()
