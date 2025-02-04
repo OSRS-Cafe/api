@@ -1,9 +1,6 @@
 package cafe.osrs.api.clients.hiscore
 
-import cafe.osrs.api.utils.NameEmptyException
-import cafe.osrs.api.utils.NameTooLongException
-import cafe.osrs.api.utils.addUserAgent
-import cafe.osrs.api.utils.getUnixTime
+import cafe.osrs.api.utils.*
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -20,8 +17,7 @@ object HiscoreClient {
     fun getHiscoreURL(mode: HiscoreMode, player: String) = "https://secure.runescape.com/m=${mode.endpoint}/index_lite.json?player=$player"
 
     suspend fun getHiscore(mode: HiscoreMode, player: String): HiscoreResponse {
-        if(player.length > 12) throw NameTooLongException(player)
-        if(player.isBlank()) throw NameEmptyException()
+        player.verifyValidCharacterName()
 
         val key = HiscoreResponseKey(player, mode)
 
