@@ -1,5 +1,6 @@
 package cafe.osrs.api
 
+import cafe.osrs.api.routes.PlayerRoute
 import cafe.osrs.api.utils.RSApiException
 import cafe.osrs.api.utils.TokenLoader
 import io.ktor.serialization.kotlinx.json.*
@@ -28,7 +29,6 @@ object CafeAPI {
     }
 
     private fun setup(): Application.() -> Unit = {
-        install(WebSockets)
         setupRateLimit()()
         setupCors()()
         setupContentNegotiation()()
@@ -71,13 +71,13 @@ object CafeAPI {
 
     private fun setupContentNegotiation(): Application.() -> Unit = {
         install(ContentNegotiation) {
-            json(Json { ignoreUnknownKeys = true })
+            json(Json)
         }
     }
 
     private fun setupRoutes(): Application.() -> Unit = {
         routing {
-
+            PlayerRoute()
         }
     }
 }
