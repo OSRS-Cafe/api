@@ -1,6 +1,7 @@
 package cafe.osrs.api
 
 import cafe.osrs.api.routes.PlayerRoute
+import cafe.osrs.api.routes.RankRoute
 import cafe.osrs.api.utils.RSApiException
 import cafe.osrs.api.utils.TokenLoader
 import io.ktor.serialization.kotlinx.json.*
@@ -78,6 +79,7 @@ object CafeAPI {
     private fun setupRoutes(): Application.() -> Unit = {
         routing {
             PlayerRoute()
+            RankRoute()
         }
     }
 }
