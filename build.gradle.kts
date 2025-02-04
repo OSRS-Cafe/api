@@ -25,7 +25,7 @@ dependencies {
         //ktor client
         add("ktor-client-core")
         add("ktor-client-cio")
-        add("ktor-client-content-negotation")
+        add("ktor-client-content-negotiation")
         //ktor common
         add("ktor-serialization-kotlinx-json")
     }
