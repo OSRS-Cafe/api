@@ -27,14 +27,9 @@ fun HttpClientConfig<*>.addUserAgent() {
 fun getUnixTime() = System.currentTimeMillis() / 1000
 
 fun ApplicationCall.setHiscoreResponseHeaders(response: HiscoreResponse) {
-    //TODO: Put this into the response json?
-    //Later sven: Probably not, this way its very convenient to pass this message for multiple kind of responses
-    //We should however make sure to have different cache headers for different kinds of clients (eg: Hiscore vs GE)
-    //Maybe call it HS-CACHE vs GE-CACHE? Seems fitting.
-    this.response.header("RS-Cache-QueryTime", response.queryTime)
-    this.response.header("RS-Cache-Cached", response.cached.toString())
-    this.response.header("RS-Cache-Time-Until-Refresh", response.timeUntilRefresh)
-    this.response.header("content-type", "application/json")
+    this.response.header("HS-Cache-QueryTime", response.queryTime)
+    this.response.header("HS-Cache-Cached", response.cached.toString())
+    this.response.header("HS-Cache-Time-Until-Refresh", response.timeUntilRefresh)
 }
 
 fun String?.verifyValidCharacterName(): String {
