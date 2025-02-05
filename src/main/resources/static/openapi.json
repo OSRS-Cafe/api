@@ -43,6 +43,16 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "ranked",
+                        "in": "query",
+                        "description": "If set the api will only return skills/activities in which the player is ranked.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [ "set" ]
+                        }
                     }
                 ],
                 "responses": {
