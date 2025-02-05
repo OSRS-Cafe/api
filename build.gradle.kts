@@ -43,7 +43,7 @@ tasks.named("jar") {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
 
 class MultiImplementationScope(
