@@ -34,6 +34,14 @@ dependencies {
     implementation(group = "io.swagger.codegen.v3", name = "swagger-codegen-generators", version = "+")
 }
 
+application {
+    mainClass.set("cafe.osrs.api.MainKt")
+}
+
+tasks.named("jar") {
+    enabled = false
+}
+
 kotlin {
     jvmToolchain(21)
 }
