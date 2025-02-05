@@ -15,8 +15,8 @@ import kotlin.time.Duration.Companion.minutes
 object HiscoreClient {
     private val cache = HashMap<HiscoreResponseKey, HiscoreCache>()
     private val client = HttpClient { addUserAgent() }
-    private val CACHE_TIME = 10.minutes.inWholeSeconds //TODO: Make this configurable
     private val LOGGER = KtorSimpleLogger("HiscoreClient") //TODO: is this how you do logging in ktor??
+    private val CACHE_TIME = APIConfig.hiscoreCacheTimeMinutes.minutes.inWholeSeconds
 
     fun getHiscoreURL(mode: HiscoreMode, player: String) = "https://secure.runescape.com/m=${mode.endpoint}/index_lite.json?player=$player"
 
