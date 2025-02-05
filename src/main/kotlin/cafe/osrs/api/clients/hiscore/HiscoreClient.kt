@@ -1,11 +1,15 @@
 package cafe.osrs.api.clients.hiscore
 
-import cafe.osrs.api.utils.*
+import cafe.osrs.api.utils.addUserAgent
+import cafe.osrs.api.utils.getUnixTime
+import cafe.osrs.api.utils.verifyValidCharacterName
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.util.logging.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.minutes
 
 object HiscoreClient {
@@ -30,7 +34,7 @@ object HiscoreClient {
             val cachedNew = HiscoreCache(
                 status = response.status,
                 queryTime = getUnixTime(),
-                response = if(response.status == HttpStatusCode.OK) response.bodyAsText() else null
+                response = if(response.status == HttpStatusCode.OK) Json.decodeFromString(response.bodyAsText()) else null
             )
             cache[key] = cachedNew
             Pair(false, cachedNew)
@@ -48,6 +52,29 @@ object HiscoreClient {
     }
 }
 
+@Serializable
+data class HiscoreResponseDTO(
+    val skills: List<HiscoreResponseSkillDTO>,
+    val activities: List<HiscoreResponseActivtityDTO>
+)
+
+@Serializable
+data class HiscoreResponseSkillDTO(
+    val id: Int,
+    val name: String,
+    val rank: Int,
+    val level: Int,
+    val xp: Int
+)
+
+@Serializable
+data class HiscoreResponseActivtityDTO(
+    val id: Int,
+    val name: String,
+    val rank: Int,
+    val score: Int
+)
+
 data class HiscoreResponseKey(
     val player: String,
     val mode: HiscoreMode
@@ -56,7 +83,7 @@ data class HiscoreResponseKey(
 data class HiscoreCache(
     val status: HttpStatusCode,
     val queryTime: Long,
-    val response: String?
+    val response: HiscoreResponseDTO?
 )
 
 data class HiscoreResponse(
@@ -64,5 +91,5 @@ data class HiscoreResponse(
     val cached: Boolean,
     val queryTime: Long,
     val timeUntilRefresh: Long,
-    val response: String?
+    val response: HiscoreResponseDTO?
 )
