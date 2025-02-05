@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "OSRS.Cafe API",
-        "description": "Description\nTest",
+        "description": "A free Oldschool Runescape API provided by OSRS.Cafe<br/><a href='https://osrs.cafe' target='_blank'>OSRS.Cafe</a><br/><a href='https://github.com/OSRS-Cafe/api' target='_blank'>GitHub Repository</a>",
         "contact": {
             "email": "sven@wollinger.email"
         }

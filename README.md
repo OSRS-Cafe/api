@@ -14,7 +14,6 @@ Currently, API Tokens are not implemented, but are planned to be implemented sho
 ## TO-DO
 
 - Grand Exchange Endpoint
-- Decide on proper headers between different Clients (HiscoreClient vs GEClient) and decide on if a common Caching Utility should be used.
 
 ## Dependencies used in this project
 
