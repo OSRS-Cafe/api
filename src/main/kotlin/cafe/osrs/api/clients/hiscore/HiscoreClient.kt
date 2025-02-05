@@ -1,5 +1,6 @@
 package cafe.osrs.api.clients.hiscore
 
+import cafe.osrs.api.APIConfig
 import cafe.osrs.api.utils.addUserAgent
 import cafe.osrs.api.utils.getUnixTime
 import cafe.osrs.api.utils.verifyValidCharacterName
@@ -15,8 +16,8 @@ import kotlin.time.Duration.Companion.minutes
 object HiscoreClient {
     private val cache = HashMap<HiscoreResponseKey, HiscoreCache>()
     private val client = HttpClient { addUserAgent() }
-    private val LOGGER = KtorSimpleLogger("HiscoreClient") //TODO: is this how you do logging in ktor??
     private val CACHE_TIME = APIConfig.hiscoreCacheTimeMinutes.minutes.inWholeSeconds
+    private val LOGGER = KtorSimpleLogger("HiscoreClient")
 
     fun getHiscoreURL(mode: HiscoreMode, player: String) = "https://secure.runescape.com/m=${mode.endpoint}/index_lite.json?player=$player"
 
@@ -29,7 +30,7 @@ object HiscoreClient {
 
         val (isCached, response) = if(cached == null || getUnixTime() > cached.queryTime + CACHE_TIME) {
             val url = getHiscoreURL(mode, player)
-            LOGGER.info("HiscoreUtils.getHiscore called ($url)")
+            LOGGER.info("HiscoreClient.getHiscore called ($url)")
             val response = client.get(url)
             val cachedNew = HiscoreCache(
                 status = response.status,
