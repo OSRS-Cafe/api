@@ -75,6 +75,11 @@
             "PlayerInfo": {
                 "type": "object",
                 "properties": {
+                    "combatLevel": {
+                        "type": "double",
+                        "example": 57.150000000000006,
+                        "description": "The players combat level"
+                    },
                     "skills": {
                         "type": "array",
                         "items": {

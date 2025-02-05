@@ -2,7 +2,7 @@
 
 This Project aims to offer a free to use API for Oldschool Runescape.
 
-It will always be Open Source and Free to use on [OSRS.Cafe](https://api.osrs.cafe) (Soon)!
+It will always be Open Source and Free to use on [OSRS.Cafe](https://api.osrs.cafe)!
 
 Currently, API Tokens are not implemented, but are planned to be implemented should the need for them arise.
 
