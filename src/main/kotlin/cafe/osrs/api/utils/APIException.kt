@@ -8,6 +8,7 @@ open class RSApiException(
     val status: HttpStatusCode
 ): Exception(message)
 
-class BadHiscoreModeException : RSApiException("Bad Mode Format! Available: ${HiscoreMode.prettyList}", HttpStatusCode.BadRequest)
-class NameTooLongException(name: String): RSApiException("Player name ($name) cant exceed 12 characters", HttpStatusCode.BadRequest)
-class NameEmptyException: RSApiException("Player name cant be empty", HttpStatusCode.BadRequest)
+class GenericRSApiException(message: String = "No info provided"): RSApiException(message = "Ouch! We have encountered an issue while working on your request. Info: $message.", status = HttpStatusCode.InternalServerError)
+class BadHiscoreModeException : RSApiException(message = "Bad Mode Format! Available: ${HiscoreMode.prettyList}", status = HttpStatusCode.BadRequest)
+class NameTooLongException(name: String): RSApiException(message = "Player name ($name) cant exceed 12 characters", status = HttpStatusCode.BadRequest)
+class NameEmptyException: RSApiException(message = "Player name cant be empty", status = HttpStatusCode.BadRequest)
