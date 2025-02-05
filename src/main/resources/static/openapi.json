@@ -18,11 +18,121 @@
         }
     ],
     "paths": {
-        "/player/{name}/{mode}":{
+        "/player/{mode}/{name}":{
             "get": {
                 "tags": [ "player" ],
                 "summary": "Get Player Info",
-                "description": "Get Player Info for a given character (xp, ranks, activities, combat level). Player must be on the hiscores for this to work!"
+                "description": "Get Player Info for a given character (xp, ranks, activities, combat level). Player must be on the hiscores for this to work!",
+                "parameters": [
+                    {
+                        "name": "mode",
+                        "in": "path",
+                        "description": "Game Mode",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [ "hiscore_oldschool", "hiscore_oldschool_ironman", "hiscore_oldschool_ultimate", "hiscore_oldschool_hardcore_ironman", "hiscore_oldschool_deadman", "hiscore_oldschool_seasonal", "hiscore_oldschool_tournament", "hiscore_oldschool_fresh_start" ]
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Player Name",
+                        "required": true,
+                        "example": "Sven Ratte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success! Enjoy your player data.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlayerInfo"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PlayerInfo": {
+                "type": "object",
+                "properties": {
+                    "skills": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Skill"
+                        }
+                    },
+                    "activities": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Activity"
+                        }
+                    }
+                }
+            },
+            "Skill": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 15,
+                        "description": "The ID of the skill"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Mining",
+                        "description": "The name of the skill"
+                    },
+                    "rank": {
+                        "type": "integer",
+                        "example": 1978027,
+                        "description": "Your rank on the hiscores for this given skill. -1 means you are not on the hiscores for this given skill."
+                    },
+                    "level": {
+                        "type": "integer",
+                        "example": 61,
+                        "description": "Your level in this skill"
+                    },
+                    "xp": {
+                        "type": "integer",
+                        "example": 315148,
+                        "description": "Your xp in this skill"
+                    }
+                }
+            },
+            "Activity": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 7,
+                        "description": "The ID of this activity"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Clue Scrolls (beginner)",
+                        "description": "The name of this activity"
+                    },
+                    "rank": {
+                        "type": "integer",
+                        "example": 1303408,
+                        "description": "Your rank in this activity"
+                    },
+                    "score": {
+                        "type": "integer",
+                        "example": 2,
+                        "description": "Your score in this activity"
+                    }
+                }
             }
         }
     }
