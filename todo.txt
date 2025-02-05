@@ -3,3 +3,9 @@ TODO:
 - Decide on Headers for different clients
 - Setup proper logging
 - More endpoints (GE, etc)
+- Credit all dependencies (+ https://github.com/Amoenus/SwaggerDark)
+
+TODO: Before release
+- set up proper config env names
+- add blank page that explains the api / usage
+- add readme
