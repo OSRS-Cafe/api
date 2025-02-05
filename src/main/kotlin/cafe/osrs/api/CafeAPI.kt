@@ -82,7 +82,6 @@ object CafeAPI {
             staticResources(remotePath = "/res", basePackage = "static")
             SwaggerRoute()
             PlayerRoute()
-            RankRoute()
         }
     }
 }
