@@ -30,13 +30,13 @@ dependencies {
     }
 
     implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = v("serialization"))
-    implementation(group = "io.swagger.codegen.v3", name = "swagger-codegen-generators", version = "+")
 }
 
 application {
     mainClass.set("cafe.osrs.api.MainKt")
 }
 
+//We only want a fat jar
 tasks.named("jar") {
     enabled = false
 }
@@ -45,6 +45,7 @@ kotlin {
     jvmToolchain(17)
 }
 
+//Utils for pretty and easy dependency adding
 class MultiImplementationScope(
     private val scope: DependencyHandlerScope,
     private val group: String,
