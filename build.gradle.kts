@@ -30,6 +30,8 @@ dependencies {
     }
 
     implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = v("serialization"))
+
+    implementation(group = "ch.qos.logback", name = "logback-classic", version = v("logback"))
 }
 
 application {
