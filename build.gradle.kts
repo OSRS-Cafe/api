@@ -21,7 +21,6 @@ dependencies {
         add("ktor-server-rate-limit")
         add("ktor-server-status-pages")
         add("ktor-server-websockets")
-        add("ktor-server-swagger")
         //ktor client
         add("ktor-client-core")
         add("ktor-client-cio")
