@@ -1,0 +1,29 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "OSRS.Cafe API",
+        "description": "Description\nTest",
+        "contact": {
+            "email": "sven@wollinger.email"
+        }
+    },
+    "tags": [
+        {
+            "name": "player",
+            "description": "Endpoint for Player Data"
+        },
+        {
+            "name": "ge",
+            "description": "Endpoint for Grand Exchange Data"
+        }
+    ],
+    "paths": {
+        "/player/{name}/{mode}":{
+            "get": {
+                "tags": [ "player" ],
+                "summary": "Get Player Info",
+                "description": "Get Player Info for a given character (xp, ranks, activities, combat level). Player must be on the hiscores for this to work!"
+            }
+        }
+    }
+}

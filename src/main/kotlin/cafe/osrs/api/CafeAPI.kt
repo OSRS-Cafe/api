@@ -2,11 +2,13 @@ package cafe.osrs.api
 
 import cafe.osrs.api.routes.PlayerRoute
 import cafe.osrs.api.routes.RankRoute
+import cafe.osrs.api.routes.SwaggerRoute
 import cafe.osrs.api.utils.RSApiException
 import cafe.osrs.api.utils.TokenLoader
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
@@ -77,6 +79,8 @@ object CafeAPI {
 
     private fun setupRoutes(): Application.() -> Unit = {
         routing {
+            staticResources(remotePath = "/res", basePackage = "static")
+            SwaggerRoute()
             PlayerRoute()
             RankRoute()
         }
