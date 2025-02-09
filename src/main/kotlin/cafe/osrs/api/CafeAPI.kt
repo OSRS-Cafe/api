@@ -1,5 +1,6 @@
 package cafe.osrs.api
 
+import cafe.osrs.api.routes.GrandExchangeRoute
 import cafe.osrs.api.routes.PlayerRoute
 import cafe.osrs.api.routes.SwaggerRoute
 import cafe.osrs.api.utils.RSApiException
@@ -72,7 +73,7 @@ object CafeAPI {
 
     private fun setupContentNegotiation(): Application.() -> Unit = {
         install(ContentNegotiation) {
-            json(Json)
+            json(Json { encodeDefaults = true })
         }
     }
 
@@ -81,6 +82,7 @@ object CafeAPI {
             staticResources(remotePath = "/res", basePackage = "static")
             SwaggerRoute()
             PlayerRoute()
+            GrandExchangeRoute()
         }
     }
 }
