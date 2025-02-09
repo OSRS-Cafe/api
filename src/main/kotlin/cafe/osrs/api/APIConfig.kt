@@ -10,6 +10,7 @@ object APIConfig {
     val tokenBucketRefill: Int = env(name = "API-TOKEN-BUCKET-REFILL", default = 60)
     val userAgent: String = env(name = "API-USER-AGENT")
     val hiscoreCacheTimeMinutes: Int = env(name = "HS-CACHE-TIME-MINUTES", default = 10)
+    val geCacheTimeMinutes: Int = env(name = "GE-CACHE-TIME-MINUTES", default = 1)
 
     private inline fun <reified T> env(name: String, default: T? = null): T {
         val envValue = System.getenv(name)
