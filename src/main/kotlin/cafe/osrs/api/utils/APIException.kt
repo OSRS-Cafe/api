@@ -12,3 +12,4 @@ class GenericRSApiException(message: String = "No info provided"): RSApiExceptio
 class BadHiscoreModeException : RSApiException(message = "Bad Mode Format! Available: ${HiscoreMode.prettyList}", status = HttpStatusCode.BadRequest)
 class NameTooLongException(name: String): RSApiException(message = "Player name ($name) cant exceed 12 characters", status = HttpStatusCode.BadRequest)
 class NameEmptyException: RSApiException(message = "Player name cant be empty", status = HttpStatusCode.BadRequest)
+class ItemIdNotFoundException: RSApiException(message = "id is not valid!", status = HttpStatusCode.BadRequest)
