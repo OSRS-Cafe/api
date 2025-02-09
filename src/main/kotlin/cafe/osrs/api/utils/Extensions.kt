@@ -1,6 +1,7 @@
 package cafe.osrs.api.utils
 
 import cafe.osrs.api.APIConfig
+import cafe.osrs.api.clients.ge.GEClientCache
 import cafe.osrs.api.clients.hiscore.HiscoreResponse
 import io.ktor.client.*
 import io.ktor.client.plugins.*
@@ -30,6 +31,12 @@ fun ApplicationCall.setHiscoreResponseHeaders(response: HiscoreResponse) {
     this.response.header("HS-Cache-QueryTime", response.queryTime)
     this.response.header("HS-Cache-Cached", response.cached.toString())
     this.response.header("HS-Cache-Time-Until-Refresh", response.timeUntilRefresh)
+}
+
+fun ApplicationCall.setGEResponseHeaders(response: GEClientCache) {
+    //TODO: is there any point in a cached boolean header? Maybe not here since the cache time is usually low unlike hiscores?
+    this.response.header("GE-Cache-QueryTime", response.queryTime)
+    this.response.header("GE-Cache-Time-Until-Refresh", response.timeUntilRefresh)
 }
 
 fun String?.verifyValidCharacterName(): String {
