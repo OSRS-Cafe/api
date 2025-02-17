@@ -58,10 +58,11 @@ tasks.processResources {
         val buildDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
 
         val gitInfo = if(isGitProject()) {
+            val git = Grgit.open(mapOf("currentDir" to project.rootDir))
             GitInfo(
-                hash = grgit.head().id,
-                branch = grgit.branch.current().name,
-                dirty = !grgit.status().isClean
+                hash = git.head().id,
+                branch = git.branch.current().name,
+                dirty = !git.status().isClean
             )
         } else if(!System.getenv("RAILWAY_PROJECT_NAME").isNullOrBlank()) {
             //Railway does not clone .git
@@ -102,7 +103,7 @@ data class GitInfo(
 
 fun isGitProject(): Boolean {
     return try {
-        grgit.head()
+        Grgit.open(mapOf("currentDir" to project.rootDir))
         true
     } catch (e: Exception) {
         false
