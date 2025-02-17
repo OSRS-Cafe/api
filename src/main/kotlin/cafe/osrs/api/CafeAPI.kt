@@ -82,6 +82,7 @@ object CafeAPI {
             SwaggerRoute()
             PlayerRoute()
             GrandExchangeRoute()
+            PlayerCountRoute()
         }
     }
 }
