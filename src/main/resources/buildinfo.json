@@ -1,0 +1,14 @@
+{
+    "version": "$version",
+    "buildDate": "$buildDate",
+    "githash": "$githash",
+    "githashFull": "$githashFull",
+    "branch": "$branch",
+    "dirty": "$dirty",
+    "build": {
+        "osname": "$osname",
+        "osversion": "$osversion",
+        "osarch": "$osarch",
+        "java": "$java"
+    }
+}

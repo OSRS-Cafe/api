@@ -1,7 +1,13 @@
+import org.gradle.internal.os.OperatingSystem
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+
 plugins {
     kotlin("jvm") version "1.9.22"
     id("io.ktor.plugin") version "3.0.2"
     kotlin("plugin.serialization") version "2.1.0"
+    id("org.ajoberstar.grgit") version "4.1.1" //Used to determine the status of the repo
 }
 
 group = "cafe.osrs"
@@ -43,8 +49,39 @@ tasks.named("jar") {
     enabled = false
 }
 
+tasks.processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from("src/main/resources/") {
+        include("buildinfo.json")
+        val javaToolchain = project.extensions.findByType(JavaPluginExtension::class.java)?.toolchain
+        val buildDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
+        expand (
+            "version" to version,
+            "buildDate" to "$buildDate (${TimeZone.getDefault().id})",
+            "githash" to grgit.head().abbreviatedId,
+            "githashFull" to grgit.head().id,
+            "branch" to grgit.branch.current().name,
+            "dirty" to !grgit.status().isClean,
+            "osname" to System.getProperty("os.name"),
+            "osversion" to getSystemVersion(),
+            "osarch" to System.getProperty("os.arch"),
+            "java" to (javaToolchain?.languageVersion?.orNull ?: "null")
+        )
+    }
+    outputs.upToDateWhen { false } // Forces execution every time
+}
+
 kotlin {
     jvmToolchain(17)
+}
+
+fun getSystemVersion(): String {
+    if(!OperatingSystem.current().isWindows) return System.getProperty("os.version")
+    return Runtime.getRuntime()
+        .exec(arrayOf("cmd.exe", "/c", "ver"))
+        .inputReader()
+        .readLines()
+        .joinToString(separator = "") { it.ifBlank { "" } }
 }
 
 //Utils for pretty and easy dependency adding

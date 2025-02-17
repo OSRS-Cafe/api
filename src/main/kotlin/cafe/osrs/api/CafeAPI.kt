@@ -1,8 +1,6 @@
 package cafe.osrs.api
 
-import cafe.osrs.api.routes.GrandExchangeRoute
-import cafe.osrs.api.routes.PlayerRoute
-import cafe.osrs.api.routes.SwaggerRoute
+import cafe.osrs.api.routes.*
 import cafe.osrs.api.utils.RSApiException
 import cafe.osrs.api.utils.TokenLoader
 import io.ktor.serialization.kotlinx.json.*
@@ -80,6 +78,7 @@ object CafeAPI {
     private fun setupRoutes(): Application.() -> Unit = {
         routing {
             staticResources(remotePath = "/res", basePackage = "static")
+            AboutRoute()
             SwaggerRoute()
             PlayerRoute()
             GrandExchangeRoute()
