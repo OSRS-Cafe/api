@@ -15,5 +15,6 @@ data class GEItem(
     val high: Int,
     val highTime: Int,
     val low: Int,
-    val lowTime: Int
+    val lowTime: Int,
+    val volume: Int
 )
