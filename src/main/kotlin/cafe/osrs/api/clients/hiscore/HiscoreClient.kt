@@ -1,10 +1,9 @@
 package cafe.osrs.api.clients.hiscore
 
 import cafe.osrs.api.APIConfig
-import cafe.osrs.api.utils.addUserAgent
+import cafe.osrs.api.utils.createHttpClient
 import cafe.osrs.api.utils.getUnixTime
 import cafe.osrs.api.utils.verifyValidCharacterName
-import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -15,9 +14,9 @@ import kotlin.time.Duration.Companion.minutes
 
 object HiscoreClient {
     private val cache = HashMap<HiscoreResponseKey, HiscoreCache>()
-    private val client = HttpClient { addUserAgent() }
+    private val client = createHttpClient("HSClient")
     private val CACHE_TIME = APIConfig.hiscoreCacheTimeMinutes.minutes.inWholeSeconds
-    private val LOGGER = KtorSimpleLogger("HiscoreClient")
+    private val LOGGER = KtorSimpleLogger("HSClient")
 
     fun getHiscoreURL(mode: HiscoreMode, player: String) = "https://secure.runescape.com/m=${mode.endpoint}/index_lite.json?player=$player"
 
