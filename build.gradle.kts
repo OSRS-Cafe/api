@@ -1,3 +1,4 @@
+import org.ajoberstar.grgit.Grgit
 import org.gradle.internal.os.OperatingSystem
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -55,13 +56,14 @@ tasks.processResources {
         include("buildinfo.json")
         val javaToolchain = project.extensions.findByType(JavaPluginExtension::class.java)?.toolchain
         val buildDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
+        val git = Grgit.open(mapOf("currentDir" to project.rootDir))
         expand (
             "version" to version,
             "buildDate" to "$buildDate (${TimeZone.getDefault().id})",
-            "githash" to grgit.head().abbreviatedId,
-            "githashFull" to grgit.head().id,
-            "branch" to grgit.branch.current().name,
-            "dirty" to !grgit.status().isClean,
+            "githash" to git.head().abbreviatedId,
+            "githashFull" to git.head().id,
+            "branch" to git.branch.current().name,
+            "dirty" to !git.status().isClean,
             "osname" to System.getProperty("os.name"),
             "osversion" to getSystemVersion(),
             "osarch" to System.getProperty("os.arch"),
