@@ -8,6 +8,7 @@ open class RSApiException(
     val status: HttpStatusCode
 ): Exception(message)
 
+class NotAuthorizedException: RSApiException(message = "Not Authorized", status = HttpStatusCode.Unauthorized)
 class GenericRSApiException(message: String = "No info provided"): RSApiException(message = "Ouch! We have encountered an issue while working on your request. Info: $message.", status = HttpStatusCode.InternalServerError)
 class BadHiscoreModeException : RSApiException(message = "Bad Mode Format! Available: ${HiscoreMode.prettyList}", status = HttpStatusCode.BadRequest)
 class NameTooLongException(name: String): RSApiException(message = "Player name ($name) cant exceed 12 characters", status = HttpStatusCode.BadRequest)

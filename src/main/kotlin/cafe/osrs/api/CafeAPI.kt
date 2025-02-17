@@ -83,6 +83,7 @@ object CafeAPI {
             PlayerRoute()
             GrandExchangeRoute()
             PlayerCountRoute()
+            VolumeFileBrowserRoute()
         }
     }
 }

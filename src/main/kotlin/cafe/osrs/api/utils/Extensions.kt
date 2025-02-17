@@ -12,6 +12,8 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.util.logging.*
 import kotlinx.serialization.json.Json
+import java.net.URI
+import java.text.DecimalFormat
 
 internal val DEFAULT_LETTERS = ArrayList<Char>().apply {
     addAll(('a'..'z').toList())
@@ -52,5 +54,22 @@ fun createHttpClient(name: String): HttpClient {
         install(ContentNegotiation) {
             json(Json)
         }
+    }
+}
+
+fun URI.withPath(path: String) = URI(scheme, authority, path, query, fragment)
+
+fun Long.formatFileSize(
+    format: DecimalFormat = DecimalFormat("#.##")
+): String {
+    val kb = 1024.0
+    val mb = kb * 1024
+    val gb = mb * 1024
+
+    return when {
+        this >= gb -> "${format.format(this / gb)} GB"
+        this >= mb -> "${format.format(this / mb)} MB"
+        this >= kb -> "${format.format(this / kb)} KB"
+        else -> "$this bytes"
     }
 }
