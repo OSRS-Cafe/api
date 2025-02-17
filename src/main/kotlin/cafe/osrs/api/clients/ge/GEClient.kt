@@ -1,96 +1,46 @@
 package cafe.osrs.api.clients.ge
 
-import cafe.osrs.api.APIConfig.geCacheTimeMinutes
-import cafe.osrs.api.utils.GenericRSApiException
-import cafe.osrs.api.utils.ItemIdNotFoundException
-import cafe.osrs.api.utils.addUserAgent
-import cafe.osrs.api.utils.getUnixTime
-import io.ktor.client.*
+import cafe.osrs.api.APIConfig
+import cafe.osrs.api.utils.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.util.logging.*
-import kotlinx.serialization.json.Json
 import java.io.File
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
+//TODO: Rename these clients? Should we group clients based on the endpoints they access (probably since they are clients for that) or based on the data they return/calculate?
 object GEClient {
+    //TODO: The runescape wiki api offers old data based on time, support that!
     private const val URL_VOLUMES = "https://prices.runescape.wiki/api/v1/osrs/volumes"
     private const val URL_MAPPING = "https://prices.runescape.wiki/api/v1/osrs/mapping"
     private const val URL_DATA_LATEST = "https://prices.runescape.wiki/api/v1/osrs/latest"
     private const val URL_ICON = "https://oldschool.runescape.wiki/images/%s"
 
-    private val client = HttpClient { addUserAgent() }
+    private val client = createHttpClient("GEClient")
     private val LOGGER = KtorSimpleLogger("GEClient")
-    private val json = Json { encodeDefaults = true }
-    private val cacheFolder = File(".cache").apply { mkdirs() }
+    private val cacheFolder = File(APIConfig.volumePath, "icon-cache").apply { mkdirs() }
 
-    private var geClientCache: GEClientCache? = null
-
-    suspend fun getIcon(id: Int, type: IconType): ByteArray {
-        if(geClientCache == null) refreshCache() //Only refresh if we didnt do it yet, we dont need to update data for images
-        //TODO: Cache files in ram? ram more expensive then the cpu time to read a file?
-        val iconBaseFilename = geClientCache?.mapping?.firstOrNull { it.id == id }?.icon?.replace(" ", "_") ?: throw ItemIdNotFoundException()
-        val realName = File(iconBaseFilename).let { base -> "${base.nameWithoutExtension}${type.addition}.${base.extension}" }
-        val cacheFile = File(cacheFolder, realName)
-        if(cacheFile.exists()) {
-            return cacheFile.readBytes()
-        } else {
-            val response = callIcon(realName)
-            cacheFile.writeBytes(response)
-            return response
-        }
+    //TODO: Enable a ComputedStore to force refresh if another ComputedStore has refreshed since
+    val mappingStore = ComputedStore(cacheTime = 12.hours) {
+        client.get(URL_MAPPING).body<List<GEItemMapping>>()
     }
-
-    suspend fun getMapping(): List<GEItemMapping> {
-        refreshCache()
-        return geClientCache!!.mapping
+    val volumesStore = ComputedStore(cacheTime = APIConfig.geCacheTimeMinutes.minutes) {
+        client.get(URL_VOLUMES).body<GEVolumes>()
     }
-
-    suspend fun getDataLatest(): GEVolumeData {
-        refreshCache()
-        return geClientCache!!.data
+    val dataStore = ComputedStore(cacheTime = APIConfig.geCacheTimeMinutes.minutes) {
+        client.get(URL_DATA_LATEST).body<GEVolumeData>()
     }
-
-    suspend fun getItems(): List<GEItem> {
-        refreshCache()
-        return geClientCache!!.items
-    }
-
-    suspend fun getGEClientCache(): GEClientCache {
-        refreshCache()
-        return geClientCache!!
-    }
-
-    //Refreshes the cache if its null or the timeUntilRefresh is passed
-    private suspend fun refreshCache() {
-        if(geClientCache == null || geClientCache!!.timeUntilRefresh < getUnixTime()) {
-            val data = callDataLatest()
-            val mapping = callMapping()
-            val items = createItems(data = data, mapping = mapping)
-            geClientCache = GEClientCache(queryTime = getUnixTime(), timeUntilRefresh = getUnixTime() + geCacheTimeMinutes.minutes.inWholeSeconds, data = data, mapping = mapping, items = items)
-        }
-    }
-
-    private suspend fun callIcon(name: String): ByteArray {
-        val url = URL_ICON.format(name)
-        LOGGER.info("Called $url")
-        return client.get(url).bodyAsBytes()
-    }
-
-    private suspend fun callMapping(): List<GEItemMapping> {
-        LOGGER.info("Called: $URL_MAPPING")
-        return json.decodeFromString(client.get(URL_MAPPING).body())
-    }
-
-    private suspend fun callDataLatest(): GEVolumeData {
-        LOGGER.info("Called: $URL_DATA_LATEST")
-        return json.decodeFromString(client.get(URL_DATA_LATEST).body())
+    val itemStore = ComputedStore(cacheTime = APIConfig.geCacheTimeMinutes.minutes) {
+        createItems(data = dataStore.get(), mapping = mappingStore.get(), volumes = volumesStore.get())
     }
 
     //Create a combined Item DTO list with both data and mapping
-    private fun createItems(data: GEVolumeData, mapping: List<GEItemMapping>): List<GEItem> {
-        return mapping.filter { data.data.contains(it.id) }.map {
+    private fun createItems(data: GEVolumeData, mapping: List<GEItemMapping>, volumes: GEVolumes): List<GEItem> {
+        return mapping.filter { itemMapping ->
+            data.data.contains(itemMapping.id).also { if(!it) LOGGER.debug("Couldn't find data for {}", itemMapping) }
+        }.map {
             val itemData = data.data[it.id] ?: throw GenericRSApiException("Could not find item with id: ${it.name}")
             GEItem(
                 name = it.name,
@@ -104,8 +54,22 @@ object GEClient {
                 high = itemData.high ?: -1,
                 highTime = itemData.highTime ?: -1,
                 low = itemData.low ?: -1,
-                lowTime = itemData.lowTime ?: -1
+                lowTime = itemData.lowTime ?: -1,
+                volume = volumes.data[it.id] ?: -1
             )
+        }
+    }
+
+    suspend fun getIcon(id: Int, type: IconType): ByteArray {
+        val iconBaseFilename = mappingStore.get().firstOrNull { it.id == id }?.icon?.replace(" ", "_") ?: throw ItemIdNotFoundException()
+        val realName = File(iconBaseFilename).let { base -> "${base.nameWithoutExtension}${type.addition}.${base.extension}" }
+        val cacheFile = File(cacheFolder, realName)
+        if(cacheFile.exists()) {
+            return cacheFile.readBytes()
+        } else {
+            val response = client.get(URL_ICON.format(realName)).bodyAsBytes()
+            cacheFile.writeBytes(response)
+            return response
         }
     }
 
