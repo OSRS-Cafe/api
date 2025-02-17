@@ -56,14 +56,31 @@ tasks.processResources {
         include("buildinfo.json")
         val javaToolchain = project.extensions.findByType(JavaPluginExtension::class.java)?.toolchain
         val buildDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
-        val git = Grgit.open(mapOf("currentDir" to project.rootDir))
+
+        val gitInfo = if(isGitProject()) {
+            GitInfo(
+                hash = grgit.head().id,
+                branch = grgit.branch.current().name,
+                dirty = !grgit.status().isClean
+            )
+        } else if(!System.getenv("RAILWAY_PROJECT_NAME").isNullOrBlank()) {
+            //Railway does not clone .git
+            GitInfo(
+                hash = System.getenv("RAILWAY_GIT_COMMIT_SHA"),
+                branch = System.getenv("RAILWAY_GIT_BRANCH"),
+                dirty = false
+            )
+        } else {
+            GitInfo("unknown", "unknown", false)
+        }
+
         expand (
             "version" to version,
             "buildDate" to "$buildDate (${TimeZone.getDefault().id})",
-            "githash" to git.head().abbreviatedId,
-            "githashFull" to git.head().id,
-            "branch" to git.branch.current().name,
-            "dirty" to !git.status().isClean,
+            "githash" to gitInfo.hash.substring(0, 7),
+            "githashFull" to gitInfo.hash,
+            "branch" to gitInfo.branch,
+            "dirty" to gitInfo.dirty,
             "osname" to System.getProperty("os.name"),
             "osversion" to getSystemVersion(),
             "osarch" to System.getProperty("os.arch"),
@@ -75,6 +92,21 @@ tasks.processResources {
 
 kotlin {
     jvmToolchain(17)
+}
+
+data class GitInfo(
+    val hash: String,
+    val branch: String,
+    val dirty: Boolean
+)
+
+fun isGitProject(): Boolean {
+    return try {
+        grgit.head()
+        true
+    } catch (e: Exception) {
+        false
+    }
 }
 
 fun getSystemVersion(): String {
