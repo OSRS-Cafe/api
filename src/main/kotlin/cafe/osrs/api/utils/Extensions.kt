@@ -5,8 +5,14 @@ import cafe.osrs.api.clients.ge.GEClientCache
 import cafe.osrs.api.clients.hiscore.HiscoreResponse
 import io.ktor.client.*
 import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.observer.*
+import io.ktor.client.statement.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
+import io.ktor.util.logging.*
+import kotlinx.serialization.json.Json
 
 internal val DEFAULT_LETTERS = ArrayList<Char>().apply {
     addAll(('a'..'z').toList())
@@ -18,12 +24,6 @@ fun String.Companion.random(
     length: Int,
     characters: List<Char> = DEFAULT_LETTERS
 ): String = Array(length) { characters.random() }.joinToString("")
-
-fun HttpClientConfig<*>.addUserAgent() {
-    install(UserAgent) {
-        agent = APIConfig.userAgent
-    }
-}
 
 fun getUnixTime() = System.currentTimeMillis() / 1000
 
@@ -45,4 +45,19 @@ fun String?.verifyValidCharacterName(): String {
         length > 12 -> throw NameTooLongException(this)
     }
     return this!!
+}
+
+fun createHttpClient(name: String): HttpClient {
+    return HttpClient {
+        val logger = KtorSimpleLogger(name)
+        ResponseObserver { response ->
+            logger.info("Called ${response.request.url}")
+        }
+        install(UserAgent) {
+            agent = APIConfig.userAgent
+        }
+        install(ContentNegotiation) {
+            json(Json)
+        }
+    }
 }
