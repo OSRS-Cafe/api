@@ -2,6 +2,8 @@ package cafe.osrs.api.utils
 
 import cafe.osrs.api.clients.hiscore.HiscoreMode
 import io.ktor.http.*
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 open class RSApiException(
     override val message: String, //Override so that its never null
@@ -10,6 +12,7 @@ open class RSApiException(
 
 class NotAuthorizedException: RSApiException(message = "Not Authorized", status = HttpStatusCode.Unauthorized)
 class GenericRSApiException(message: String = "No info provided"): RSApiException(message = "Ouch! We have encountered an issue while working on your request. Info: $message.", status = HttpStatusCode.InternalServerError)
+class BadCombatLevelRequestException: RSApiException(message = "Bad request body.", status = HttpStatusCode.BadRequest)
 class BadHiscoreModeException : RSApiException(message = "Bad Mode Format! Available: ${HiscoreMode.prettyList}", status = HttpStatusCode.BadRequest)
 class NameTooLongException(name: String): RSApiException(message = "Player name ($name) cant exceed 12 characters", status = HttpStatusCode.BadRequest)
 class NameEmptyException: RSApiException(message = "Player name cant be empty", status = HttpStatusCode.BadRequest)

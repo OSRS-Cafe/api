@@ -1,8 +1,8 @@
 package cafe.osrs.api
 
+import cafe.osrs.api.clients.playercount.PlayerCountClient
 import cafe.osrs.api.routes.*
-import cafe.osrs.api.utils.RSApiException
-import cafe.osrs.api.utils.TokenLoader
+import cafe.osrs.api.utils.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -79,10 +79,10 @@ object CafeAPI {
         routing {
             staticResources(remotePath = "/res", basePackage = "static")
             AboutRoute()
+            MiscRoute()
             SwaggerRoute()
             PlayerRoute()
             GrandExchangeRoute()
-            PlayerCountRoute()
             VolumeFileBrowserRoute()
         }
     }
