@@ -78,6 +78,7 @@ object CafeAPI {
     private fun setupRoutes(): Application.() -> Unit = {
         routing {
             staticResources(remotePath = "/res", basePackage = "static")
+            WorldsRoute()
             AboutRoute()
             MiscRoute()
             SwaggerRoute()
