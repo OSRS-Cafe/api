@@ -23,9 +23,9 @@ fun Route.WorldsRoute() {
     get("/worlds") {
         val nameFilter = call.queryParameters["name"] ?: ""
         val accessFilter = call.queryParameters["access"]?.let { WorldAccess.get(it.uppercase()) }
-        val locationFilter = call.queryParameters["location"]?.split(",")?.map { WorldLocation.get(it) }.orEmpty().take(WorldLocation.entries.size)
-        val activityFilter = call.queryParameters["activity"]?.split(",")?.map { WorldActivity.get(it) }.orEmpty().take(WorldActivity.entries.size)
-        val playersFilter: List<(Int) -> (Boolean)> = call.queryParameters["players"]?.split(",")?.map {
+        val locationFilter = call.queryParameters["location"]?.split(",")?.take(WorldLocation.entries.size)?.map { WorldLocation.get(it) }.orEmpty()
+        val activityFilter = call.queryParameters["activity"]?.split(",")?.take(WorldActivity.entries.size)?.map { WorldActivity.get(it) }.orEmpty()
+        val playersFilter: List<(Int) -> (Boolean)> = call.queryParameters["players"]?.split(",")?.take(5)?.map {
             val filter: ((Int) -> (Boolean)) = { players ->
                 try {
                     when {
@@ -40,7 +40,7 @@ fun Route.WorldsRoute() {
                 }
             }
             filter
-        }.orEmpty().take(5) //Limit size of filters
+        }.orEmpty()
 
         val info = WorldsClient.worldsStore.get()
 
