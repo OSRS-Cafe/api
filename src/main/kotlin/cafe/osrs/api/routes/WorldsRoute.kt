@@ -29,10 +29,10 @@ fun Route.WorldsRoute() {
             val filter: ((Int) -> (Boolean)) = { players ->
                 try {
                     when {
-                        it.startsWith("<") -> players < (it.removePrefix("<").toInt())
-                        it.startsWith("<=") -> players <= (it.removePrefix("<=").toInt())
-                        it.startsWith(">") -> players > (it.removePrefix(">").toInt())
                         it.startsWith(">=") -> players >= (it.removePrefix(">=").toInt())
+                        it.startsWith("<=") -> players <= (it.removePrefix("<=").toInt())
+                        it.startsWith("<") -> players < (it.removePrefix("<").toInt())
+                        it.startsWith(">") -> players > (it.removePrefix(">").toInt())
                         else -> throw GenericUserErrorException("Bad expression. Examples: >500,<500,>=500,<=500.")
                     }
                 } catch (e: NumberFormatException) {
