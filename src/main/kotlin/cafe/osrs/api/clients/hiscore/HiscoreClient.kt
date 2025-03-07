@@ -23,7 +23,7 @@ object HiscoreClient {
     suspend fun getHiscore(mode: HiscoreMode, player: String): HiscoreResponse {
         player.verifyValidCharacterName()
 
-        val key = HiscoreResponseKey(player, mode)
+        val key = HiscoreResponseKey(player, mode.endpoint)
 
         val cached = cache[key]
 
@@ -77,7 +77,7 @@ data class HiscoreResponseActivtityDTO(
 
 data class HiscoreResponseKey(
     val player: String,
-    val mode: HiscoreMode
+    val endpoint: String //Group based on endpoint, so multiple HiscoreMode(s) with the same endpoint share a cache
 )
 
 data class HiscoreCache(
