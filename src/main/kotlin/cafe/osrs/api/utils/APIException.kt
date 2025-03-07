@@ -10,6 +10,7 @@ open class RSApiException(
     val status: HttpStatusCode
 ): Exception(message)
 
+class GenericUserErrorException(message: String): RSApiException(message = message, status = HttpStatusCode.BadRequest)
 class NotAuthorizedException: RSApiException(message = "Not Authorized", status = HttpStatusCode.Unauthorized)
 class GenericRSApiException(message: String = "No info provided"): RSApiException(message = "Ouch! We have encountered an issue while working on your request. Info: $message.", status = HttpStatusCode.InternalServerError)
 class BadCombatLevelRequestException: RSApiException(message = "Bad request body.", status = HttpStatusCode.BadRequest)
@@ -17,3 +18,4 @@ class BadHiscoreModeException : RSApiException(message = "Bad Mode Format! Avail
 class NameTooLongException(name: String): RSApiException(message = "Player name ($name) cant exceed 12 characters", status = HttpStatusCode.BadRequest)
 class NameEmptyException: RSApiException(message = "Player name cant be empty", status = HttpStatusCode.BadRequest)
 class ItemIdNotFoundException: RSApiException(message = "id is not valid!", status = HttpStatusCode.BadRequest)
+class BadOptionException(offered: String, available: List<String>): RSApiException(message = "Bad option: $offered. Available: ${available.joinToString(", ")}. (Upper/Lowercase is OK)", status = HttpStatusCode.BadRequest)

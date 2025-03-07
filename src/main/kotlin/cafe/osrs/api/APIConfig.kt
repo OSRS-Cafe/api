@@ -13,6 +13,7 @@ object APIConfig {
     val geCacheTimeMinutes: Int = env(name = "GE-CACHE-TIME-MINUTES", default = 1)
     val playerCountCacheTimeSeconds: Int = env(name = "PLAYER-COUNT-CACHE-SECONDS", default = 30)
     val volumePath: String = env(name = "API-VOLUME-PATH")
+    val worldsListCacheTimeMinutes: Int = env(name = "WORLDS-CACHE-TIME-MINUTES", default = 5)
 
     private inline fun <reified T> env(name: String, default: T? = null): T {
         //TODO: Allow enums here

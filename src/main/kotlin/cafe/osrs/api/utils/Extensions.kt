@@ -73,3 +73,5 @@ fun Long.formatFileSize(
         else -> "$this bytes"
     }
 }
+
+fun all(vararg input: Boolean) = input.all { it }
