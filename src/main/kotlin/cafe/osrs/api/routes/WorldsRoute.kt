@@ -19,9 +19,10 @@ data class WorldsResponse(
 )
 
 fun Route.WorldsRoute() {
+    //TODO: Don't try to map blank query parameters (eg: activity=) to an enum, instead treat it as not set?
     get("/worlds") {
         val nameFilter = call.queryParameters["name"] ?: ""
-        val accessFilter = call.queryParameters["access"]?.let { WorldAccess.getOrNull(it.uppercase()) } ?: WorldAccess.FREE
+        val accessFilter = call.queryParameters["access"]?.let { WorldAccess.get(it.uppercase()) }
         val locationFilter = call.queryParameters["location"]?.split(",")?.map { WorldLocation.get(it) }.orEmpty().take(WorldLocation.entries.size)
         val activityFilter = call.queryParameters["activity"]?.split(",")?.map { WorldActivity.get(it) }.orEmpty().take(WorldActivity.entries.size)
         val playersFilter: List<(Int) -> (Boolean)> = call.queryParameters["players"]?.split(",")?.map {
@@ -46,7 +47,7 @@ fun Route.WorldsRoute() {
         val filteredWorlds = info.worlds.filter { world ->
             all(
                 nameFilter.isBlank() || world.name.contains(nameFilter),
-                accessFilter == WorldAccess.FREE || world.access == WorldAccess.MEMBERS,
+                accessFilter == null || world.access == accessFilter,
                 locationFilter.isEmpty() || locationFilter.contains(world.location),
                 activityFilter.isEmpty() || activityFilter.contains(world.activity),
                 playersFilter.isEmpty() || playersFilter.all { filter -> filter.invoke(world.players) }
