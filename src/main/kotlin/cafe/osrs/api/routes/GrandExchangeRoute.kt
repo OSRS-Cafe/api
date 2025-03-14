@@ -40,6 +40,14 @@ fun Route.GrandExchangeRoute() {
         call.respond(items)
     }
 
+
+    get("/ge/item/{id}") {
+        val id = call.pathParameters["id"]?.toIntOrNull() ?: throw ItemIdNotFoundException()
+        val item = GEClient.itemStore.get().firstOrNull { it.id == id } ?: throw ItemIdNotFoundException()
+        setHeaders(call, GEClient.itemStore)
+        call.respond(item)
+    }
+
     get("/ge/icon/{id}") {
         val id = call.pathParameters["id"]?.toIntOrNull() ?: throw ItemIdNotFoundException()
         val detail = call.queryParameters.contains("detail").let { if(it) GEClient.IconType.DETAIL else GEClient.IconType.NORMAL }
