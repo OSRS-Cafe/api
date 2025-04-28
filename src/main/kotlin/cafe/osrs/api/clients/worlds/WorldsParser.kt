@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WorldInfo(
     val name: String,
+    val id: Int,
     val players: Int,
     val location: WorldLocation,
     val access: WorldAccess,
@@ -30,6 +31,7 @@ object WorldsParser {
         val serverRow = "<tr class='server-list__row(.*?)</tr>".toRegex(RegexOption.DOT_MATCHES_ALL)
         val serverData = "<td class='server-list__row-cell(.*?)</td>".toRegex(RegexOption.DOT_MATCHES_ALL)
         val serverDataValue = ">(.*?)<".toRegex()
+        val serverId = "id='slu-world-(.*?)'".toRegex(RegexOption.DOT_MATCHES_ALL)
     }
 
     fun parse(html: String): WorldsInfo {
@@ -44,6 +46,7 @@ object WorldsParser {
             fun p(input: String) = getParam(RegexPresets.serverDataValue, input)
             WorldInfo(
                 name = p(it.name),
+                id = getParam(RegexPresets.serverId, it.name).toInt(),
                 players = p(it.players).removeSuffix(suffix = " players").toInt(),
                 location = WorldLocation.fromListName(p(it.location)),
                 access = WorldAccess.fromListName(p(it.access)),
