@@ -3,6 +3,7 @@ package cafe.osrs.api.routes
 import cafe.osrs.api.clients.ge.GEClient
 import cafe.osrs.api.utils.ComputedStore
 import cafe.osrs.api.utils.ItemIdNotFoundException
+import io.ktor.http.HttpHeaders
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
@@ -51,6 +52,7 @@ fun Route.GrandExchangeRoute() {
     get("/ge/icon/{id}") {
         val id = call.pathParameters["id"]?.toIntOrNull() ?: throw ItemIdNotFoundException()
         val detail = call.queryParameters.contains("detail").let { if(it) GEClient.IconType.DETAIL else GEClient.IconType.NORMAL }
+        call.response.header(HttpHeaders.CacheControl, "public, max-age=31536000, immutable")
         call.respondBytes(GEClient.getIcon(id, detail))
     }
 
