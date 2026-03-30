@@ -47,7 +47,7 @@ object WorldsParser {
             WorldInfo(
                 name = p(it.name),
                 id = getParam(RegexPresets.serverId, it.name).toInt(),
-                players = p(it.players).removeSuffix(suffix = " players").toInt(),
+                players = p(it.players).removeSuffix(suffix = " players").toIntOrNull() ?: -1,
                 location = WorldLocation.fromListName(p(it.location)),
                 access = WorldAccess.fromListName(p(it.access)),
                 activity = WorldActivity.fromListName(p(it.activity))
