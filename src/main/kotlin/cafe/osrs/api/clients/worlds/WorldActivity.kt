@@ -12,6 +12,7 @@ enum class WorldActivity(private val listName: String) {
     SKILL_TOTAL_1750("1750 skill total"),
     SKILL_TOTAL_2000("2000 skill total"),
     SKILL_TOTAL_2200("2200 skill total"),
+    SKILL_TOTAL_2350("2350 skill total"),
     AGILITY_TRAINING("Agility Training"),
     BARBARIAN_ASSAULT("Barbarian Assault"),
     BLAST_FURNACE("Blast Furnace"),
@@ -68,7 +69,13 @@ enum class WorldActivity(private val listName: String) {
     TRADE__MEMBERS("Trade - Members"),
     ROLEPLAYING("Role-playing"),
     ZEAH_RUNECRAFTING("Zeah Runecrafting"),
-    CASTLE_WARS_1("Castle Wars 1");
+    CASTLE_WARS_1("Castle Wars 1"),
+    SALVAGING("Salvaging"),
+    YAMA("Yama"),
+    DEADMAN__PERMANENT("Deadman - Permanent"),
+    SORCERESS_S_GARDEN("Sorceress's Garden"),
+    MASTERING_MIXOLOGY("Mastering Mixology");
+
     companion object {
         fun get(name: String) = WorldActivity.getOrNull(name) ?: throw BadOptionException(name, entries.map { it.name })
         fun getOrNull(name: String) = entries.firstOrNull { it.name.equals(other = name, ignoreCase = true) }
